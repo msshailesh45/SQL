@@ -1,0 +1,96 @@
+create database Employee_172;
+use Employee_172;
+
+create table dept_172
+(
+deptno int,
+dname varchar(20),
+dloc varchar(20),
+primary key(deptno)
+);
+
+create table employee_172
+(
+empno int,
+ename varchar(20),
+mgr_no int,
+hiredate varchar(20),
+sal int,
+deptno int,
+primary key(empno,deptno),
+foreign key(deptno) references dept_172(deptno)
+);
+
+create table incentives_172
+(
+empno int,
+incentives_date varchar(20),
+amount int,
+primary key(empno,incentives_date),
+foreign key(empno) references employee_172(empno)
+);
+
+create table project_172
+(
+pno int,
+ploc varchar(20),
+pname varchar(20),
+primary key(pno)
+);
+
+create table assignedto_172
+(
+empno int,
+pno int,
+job_role varchar(20),
+primary key(empno,pno),
+foreign key(empno) references employee_172(empno),
+foreign key(pno) references project_172(pno)
+);
+
+insert into dept_172 values(1,'HR','new_delhi');
+insert into dept_172 values(2,'IT','bangalore');
+insert into dept_172 values(3,'Finance','mysuru');
+insert into dept_172 values(4,'development','hyderbad');
+insert into dept_172 values(5,'marketing','new_delhi');
+
+insert into employee_172 values(101,'raj',100,"12/01/1999",100000,1);
+insert into employee_172 values(201,'adhi',200,"17/01/2020",50000,2);
+insert into employee_172 values(301,'priyam',100,"01/09/2004",30000,3);
+insert into employee_172 values(401,'asha',101,"03/08/2000",10000,4);
+insert into employee_172 values(501,'shailesh',101,"29/2/2008",90000,5);
+insert into employee_172 values(601,'likith',102,"29/2/2008",90000,1);
+
+insert into incentives_172 values(101,"12/03/2004",50000);
+insert into incentives_172 values(201,"17/03/2024",25000);
+insert into incentives_172 values(301,"01/12/2019",15000);
+insert into incentives_172 values(401,"03/11/2019",5000);
+insert into incentives_172 values(501,"29/4/2019",45000);
+
+insert into project_172 values(10,"new_delhi","chatbot");
+insert into project_172 values(40,"bangalore","ml model");
+insert into project_172 values(50,"mysuru","blockchain");
+insert into project_172 values(30,"hyderbad","stocks");
+insert into project_172 values(80,"new_delhi","android app");
+
+insert into assignedto_172 values(101,10,"devops");
+insert into assignedto_172 values(201,40,"sde");
+insert into assignedto_172 values(301,50,"manager");
+insert into assignedto_172 values(401,30,"jpa");
+insert into assignedto_172 values(501,80,"pa");
+
+select * from dept_172;
+select * from employee_172;
+select * from incentives_172;
+select * from project_172;
+select * from assignedto_172;
+
+select a.empno from assignedto_172 a,project_172 p 
+where a.pno=p.pno and (ploc='bangalore' or ploc='hyderbad' or ploc='mysuru');
+
+select e.empno from employee_172 e 
+where e.empno!=all(select i.empno from incentives_172 i);
+
+select e.empno,e.ename,d.dname,a.job_role,d.dloc,p.ploc
+from employee_172 e,dept_172 d,assignedto_172 a,project_172 p
+where e.deptno=d.deptno and e.empno=a.empno and a.pno=p.pno and d.dloc=p.ploc;
