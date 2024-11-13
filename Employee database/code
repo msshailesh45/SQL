@@ -94,3 +94,15 @@ where e.empno!=all(select i.empno from incentives_172 i);
 select e.empno,e.ename,d.dname,a.job_role,d.dloc,p.ploc
 from employee_172 e,dept_172 d,assignedto_172 a,project_172 p
 where e.deptno=d.deptno and e.empno=a.empno and a.pno=p.pno and d.dloc=p.ploc;
+
+select e.ename from employee_172 e where e.empno in (
+    select m.mgr_no from employee_172 m group by m.mgr_no having count(*) = ( select max(emp_count)
+        from ( select count(*) as emp_count from employee_172 em group by em.mgr_no) as emp_count_subquery));
+
+select e.ename from employee_172 e where e.sal>(select avg(sub.sal) from employee_172 sub where sub.mgr_no=e.empno);
+
+select ename from employee_172 where sal=(select max(sal) from employee_172 where sal < (select max(sal) from employee_172));
+
+select * from employee_172 where empno=(select empno from incentives_172 where amount=(select max(amount) from incentives_172 where amount<(select max(amount) from incentives_172)));
+
+select e.ename from employee_172 e ,employee_172 m where e.mgr_no=m.empno and e.deptno=m.deptno;
